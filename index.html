@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ishaan Parikh — ECE @ Cornell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09100f;
+      --surface: #111a18;
+      --surface2: #192420;
+      --border: #1f2e2a;
+      --accent: #3dffa0;
+      --accent-dim: rgba(61,255,160,0.12);
+      --red: #ff6b5b;
+      --text: #dceae6;
+      --muted: #6e9288;
+      --dim: #2d4a44;
+      --serif: 'Fraunces', serif;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* grain */
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:999; opacity:.3;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1.1rem 3rem;
+      border-bottom:1px solid transparent;
+      transition: border-color .3s, background .3s;
+    }
+    nav.scrolled {
+      background:rgba(9,16,15,0.88);
+      backdrop-filter:blur(14px);
+      border-color:var(--border);
+    }
+    .nav-logo {
+      font-family:var(--mono); font-size:.8rem;
+      color:var(--accent); letter-spacing:.05em;
+    }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a {
+      color:var(--muted); text-decoration:none;
+      font-size:.75rem; font-family:var(--mono);
+      letter-spacing:.08em; text-transform:uppercase;
+      transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height:100vh;
+      display:grid; grid-template-columns:1fr 1fr;
+      align-items:center;
+      padding:8rem 3rem 4rem;
+      gap:4rem;
+      position:relative; overflow:hidden;
+    }
+    #hero::after {
+      content:''; position:absolute;
+      top:-20%; right:-10%; width:55vw; height:55vw;
+      background:radial-gradient(circle, rgba(61,255,160,0.05) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .hero-text { position:relative; z-index:1; }
+    .hero-tag {
+      font-family:var(--mono); font-size:.72rem;
+      color:var(--accent); letter-spacing:.12em;
+      text-transform:uppercase; margin-bottom:1rem;
+      display:flex; align-items:center; gap:.6rem;
+    }
+    .hero-tag::before {
+      content:''; display:inline-block;
+      width:24px; height:1px; background:var(--accent);
+    }
+    h1 {
+      font-family:var(--serif);
+      font-size:clamp(3.2rem,6vw,5.8rem);
+      line-height:1.0; color:var(--text); margin-bottom:1.4rem;
+      font-weight:600;
+    }
+    h1 em { font-style:italic; color:var(--accent); font-weight:300; }
+    .hero-sub {
+      color:var(--muted); font-size:1rem; font-weight:300;
+      max-width:400px; margin-bottom:2.2rem; line-height:1.75;
+    }
+    .hero-cta { display:flex; gap:1rem; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.72rem 1.7rem;
+      font-family:var(--mono); font-size:.75rem;
+      letter-spacing:.08em; text-transform:uppercase;
+      text-decoration:none; border-radius:3px;
+      transition:all .2s; cursor:pointer;
+    }
+    .btn-primary { background:var(--accent); color:var(--bg); border:1px solid var(--accent); font-weight:500; }
+    .btn-primary:hover { background:transparent; color:var(--accent); }
+    .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* Hero photo */
+    .hero-image-area { position:relative; z-index:1; display:flex; justify-content:center; }
+    .photo-frame {
+      position:relative; width:310px; height:390px;
+    }
+    .photo-frame::after {
+      content:''; position:absolute;
+      bottom:-10px; right:-10px;
+      width:100%; height:100%;
+      border:1px solid var(--dim);
+      border-radius:4px; z-index:-1;
+    }
+    .photo-frame img {
+      width:100%; height:100%; object-fit:cover;
+      border-radius:4px;
+      border:1px solid var(--border);
+      display:block;
+    }
+    .stat-chip {
+      position:absolute;
+      background:var(--surface2);
+      border:1px solid var(--border);
+      border-radius:6px; padding:.55rem .9rem;
+      font-family:var(--mono); font-size:.68rem;
+      color:var(--muted); white-space:nowrap;
+      backdrop-filter:blur(8px);
+    }
+    .stat-chip strong { color:var(--accent); display:block; font-size:1rem; }
+    .stat-chip:nth-child(2) { top:24px; right:-55px; }
+    .stat-chip:nth-child(3) { bottom:70px; left:-65px; }
+
+    /* ── SECTIONS ── */
+    .section-wrap { max-width:1100px; margin:0 auto; padding:6rem 3rem; }
+    .section-label {
+      font-family:var(--mono); font-size:.68rem;
+      color:var(--accent); letter-spacing:.15em;
+      text-transform:uppercase; margin-bottom:.6rem;
+    }
+    h2 {
+      font-family:var(--serif);
+      font-size:clamp(1.9rem,3.5vw,2.8rem);
+      line-height:1.1; margin-bottom:2.8rem; color:var(--text);
+      font-weight:600;
+    }
+    .divider {
+      width:calc(100% - 6rem); height:1px;
+      background:var(--border); margin:0 3rem;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
+    .about-text p { color:var(--muted); font-weight:300; line-height:1.85; margin-bottom:1rem; font-size:.97rem; }
+    .about-img {
+      width:100%; aspect-ratio:4/3; object-fit:cover;
+      border-radius:4px; border:1px solid var(--border);
+      display:block;
+    }
+    .skills-grid { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:1.5rem; }
+    .skill-tag {
+      font-family:var(--mono); font-size:.67rem;
+      padding:.28rem .65rem;
+      border:1px solid var(--border);
+      border-radius:2px; color:var(--muted);
+      letter-spacing:.05em; transition:all .15s;
+    }
+    .skill-tag:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* ── EXPERIENCE ── */
+    .exp-list { display:flex; flex-direction:column; }
+    .exp-item {
+      display:grid; grid-template-columns:155px 1fr;
+      gap:2rem; padding:2.4rem 0;
+      border-bottom:1px solid var(--border);
+    }
+    .exp-item:first-child { border-top:1px solid var(--border); }
+    .exp-date { font-family:var(--mono); font-size:.68rem; color:var(--dim); padding-top:.2rem; letter-spacing:.04em; }
+    .exp-content h3 { font-family:var(--serif); font-size:1.2rem; margin-bottom:.15rem; color:var(--text); }
+    .exp-company { font-family:var(--mono); font-size:.72rem; color:var(--accent); margin-bottom:.7rem; letter-spacing:.05em; }
+    .exp-content ul { list-style:none; display:flex; flex-direction:column; gap:.35rem; }
+    .exp-content li {
+      color:var(--muted); font-size:.88rem; font-weight:300;
+      padding-left:1rem; position:relative; line-height:1.6;
+    }
+    .exp-content li::before { content:'→'; position:absolute; left:0; color:var(--dim); font-size:.78rem; }
+    .exp-img {
+      width:100%; aspect-ratio:16/9; object-fit:cover;
+      border-radius:4px; border:1px solid var(--border);
+      margin-top:1rem; display:block;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+      gap:1.4rem;
+    }
+    .project-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:6px; overflow:hidden;
+      transition:border-color .2s, transform .2s;
+    }
+    .project-card:hover { border-color:var(--accent); transform:translateY(-3px); }
+    .project-card img {
+      width:100%; aspect-ratio:16/9; object-fit:cover;
+      display:block; border-bottom:1px solid var(--border);
+    }
+    .project-body { padding:1.3rem; }
+    .project-body h3 { font-family:var(--serif); font-size:1.1rem; margin-bottom:.45rem; color:var(--text); }
+    .project-body p { color:var(--muted); font-size:.84rem; font-weight:300; line-height:1.6; margin-bottom:.9rem; }
+    .project-tags { display:flex; flex-wrap:wrap; gap:.35rem; }
+    .project-tags span {
+      font-family:var(--mono); font-size:.62rem;
+      padding:.18rem .5rem; background:var(--bg);
+      border:1px solid var(--border); border-radius:2px;
+      color:var(--dim); letter-spacing:.04em;
+    }
+
+    /* ── RESEARCH ── */
+    .research-list { display:flex; flex-direction:column; gap:1.3rem; }
+    .research-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:6px; overflow:hidden;
+      transition:border-color .2s;
+      display:grid; grid-template-columns:220px 1fr;
+    }
+    .research-card:hover { border-color:var(--accent); }
+    .research-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .research-body { padding:1.6rem 1.8rem; }
+    .research-body h3 { font-family:var(--serif); font-size:1.1rem; margin-bottom:.2rem; }
+    .research-body .mentor { font-family:var(--mono); font-size:.7rem; color:var(--accent); margin-bottom:.6rem; letter-spacing:.04em; }
+    .research-body .date { font-family:var(--mono); font-size:.67rem; color:var(--dim); margin-bottom:.55rem; }
+    .research-body p { color:var(--muted); font-size:.86rem; font-weight:300; line-height:1.65; }
+
+    /* ── AWARDS ── */
+    .awards-strip { display:flex; flex-wrap:wrap; gap:.9rem; }
+    .award-pill {
+      display:flex; align-items:center; gap:.55rem;
+      background:var(--surface); border:1px solid var(--border);
+      padding:.65rem 1.1rem; border-radius:4px;
+      font-size:.84rem; color:var(--muted); transition:all .15s;
+    }
+    .award-pill:hover { border-color:var(--accent); color:var(--text); }
+    .award-pill::before { content:'★'; color:var(--accent); font-size:.65rem; }
+
+    /* ── CONTACT ── */
+    #contact { text-align:center; }
+    #contact p { color:var(--muted); font-size:1rem; font-weight:300; margin-bottom:2.2rem; }
+    .contact-links { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top:1px solid var(--border); padding:1.4rem 3rem;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    footer span { font-family:var(--mono); font-size:.68rem; color:var(--dim); letter-spacing:.06em; }
+
+    /* ── ANIMATIONS ── */
+    .fade-up { opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity:1; transform:translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:768px) {
+      #hero { grid-template-columns:1fr; padding:7rem 1.5rem 3rem; gap:2.5rem; }
+      .hero-image-area { order:-1; }
+      .photo-frame { width:230px; height:290px; }
+      .stat-chip:nth-child(2) { right:-8px; }
+      .stat-chip:nth-child(3) { left:-8px; }
+      .about-grid { grid-template-columns:1fr; gap:2rem; }
+      .exp-item { grid-template-columns:1fr; gap:.4rem; }
+      .research-card { grid-template-columns:1fr; }
+      .research-card img { height:160px; }
+      .section-wrap { padding:4rem 1.5rem; }
+      .divider { width:calc(100% - 3rem); margin:0 1.5rem; }
+      nav { padding:1rem 1.5rem; }
+      .nav-links { gap:1.2rem; }
+      footer { flex-direction:column; gap:.5rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-logo">Ishaan Parikh</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-text fade-up">
+    <div class="hero-tag">ECE @ Cornell · Class of 2029</div>
+    <h1>Ishaan<br/><em>Parikh</em></h1>
+    <p class="hero-sub">
+      I build things that think — from computer vision systems on EV motorcycles to self-driving perception stacks. Somewhere between embedded hardware and quantum ML.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:idp7@cornell.edu" class="btn btn-primary">idp7@cornell.edu</a>
+      <a href="#projects" class="btn btn-ghost">View Work ↓</a>
+    </div>
+  </div>
+  <div class="hero-image-area fade-up">
+    <div class="photo-frame">
+      <img src="images/headshot.jpg" alt="Ishaan Parikh Headshot" />
+      <div class="stat-chip"><strong>10+</strong> Systems Built</div>
+      <div class="stat-chip"><strong>4.0</strong> ECE Major GPA</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="section-wrap" id="about">
+  <div class="section-label">About</div>
+  <h2>Engineering at the edge.</h2>
+  <div class="about-grid">
+    <div class="about-text fade-up">
+      <p>I’m an Electrical and Computer Engineering student at Cornell with a passion for bridging the gap between hardware constraints and intelligent software.</p>
+      <p>Currently, I focus on SLAM, sensor fusion, and optimizing neural networks for edge deployment. I enjoy the challenge of making complex algorithms run efficiently on embedded systems.</p>
+      
+      <div class="skills-grid">
+        <div class="skill-tag">Verilog / RTL</div>
+        <div class="skill-tag">C++ / ROS2</div>
+        <div class="skill-tag">Python / PyTorch</div>
+        <div class="skill-tag">PCB Design</div>
+        <div class="skill-tag">NVIDIA Jetson</div>
+        <div class="skill-tag">LiDAR SLAM</div>
+      </div>
+    </div>
+    <img class="about-img fade-up" src="images/slam_desk.jpg" alt="Engineering Workspace" />
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-wrap" id="experience">
+  <div class="section-label">Experience</div>
+  <h2>Where I've worked</h2>
+  <div class="exp-list">
+    <div class="exp-item fade-up">
+      <div class="exp-date">Oct 2025 – Present</div>
+      <div class="exp-content">
+        <h3>Cornell Electric Vehicles</h3>
+        <div class="exp-company">Project Team · Ithaca, NY</div>
+        <ul>
+          <li>Built a custom SLAM pipeline for the self-driving perception stack</li>
+          <li>Designed 2 custom PCBs in Altium for strain gauge & RPM sensing</li>
+          <li>Developed embedded control on RP2040 with UART/WiFi comms</li>
+        </ul>
+        <img class="exp-img" src="images/slam_vis.jpg" alt="LiDAR Visualization" />
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div class="exp-date">June 2024 – Aug 2024</div>
+      <div class="exp-content">
+        <h3>Matter Motor Works</h3>
+        <div class="exp-company">R&D Intern · Ahmedabad, India</div>
+        <ul>
+          <li>Optimized laser beam welding parameters for battery pack assembly</li>
+          <li>Achieved 90% joint efficiency for Copper-Hilumin busbar welds</li>
+          <li>Built CV system to detect weld faults in real-time</li>
+        </ul>
+        <img class="exp-img" src="images/matter.jpg" alt="Battery R&D" />
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div class="exp-date">Aug 2025 – Present</div>
+      <div class="exp-content">
+        <h3>Threads @ Cornell</h3>
+        <div class="exp-company">Software Engineer · Ithaca, NY</div>
+        <ul>
+          <li>Developing full-stack features for Cornell's primary social platform</li>
+          <li>Implementing high-performance discovery algorithms</li>
+        </ul>
+        <img class="exp-img" src="images/threads.jpg" alt="Threads Development" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-wrap" id="projects">
+  <div class="section-label">Projects</div>
+  <h2>Recent Builds</h2>
+  <div class="projects-grid">
+    <div class="project-card fade-up">
+      <img src="images/weld.jpg" alt="Weld Detection" />
+      <div class="project-body">
+        <h3>Automated Weld Fault Detection</h3>
+        <p>A computer vision pipeline using YOLOv8 to identify micro-defects in laser welds.</p>
+        <div class="project-tags">
+          <span>Python</span><span>OpenCV</span><span>PyTorch</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <img src="images/xray.jpg" alt="X-ray Analysis" />
+      <div class="project-body">
+        <h3>Bone Fracture X-ray Analysis</h3>
+        <p>Deep learning model for multi-class classification of pediatric bone fractures.</p>
+        <div class="project-tags">
+          <span>CNN</span><span>Medical Imaging</span><span>PyTorch</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <img src="images/polymer.jpg" alt="GNN Polymer" />
+      <div class="project-body">
+        <h3>Graph Neural Networks for Chemistry</h3>
+        <p>Using GNNs to predict glass transition temperatures of complex polymers.</p>
+        <div class="project-tags">
+          <span>GNN</span><span>Materials Science</span><span>LAMMPS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-wrap" id="research">
+  <div class="section-label">Research</div>
+  <h2>Academic Inquiry</h2>
+  <div class="research-list">
+    <div class="research-card fade-up">
+      <img src="images/quantum.jpg" alt="Quantum Research" />
+      <div class="research-body">
+        <h3>Quantum Neural Networks</h3>
+        <div class="mentor">Prof. Peter McMahon · McMahon Lab</div>
+        <div class="date">Expected Fall 2026</div>
+        <p>Exploring the application of Variational Quantum Circuits (VQCs) for high-dimensional data classification and mapping.</p>
+      </div>
+    </div>
+
+    <div class="research-card fade-up">
+      <img src="images/li_ion.jpg" alt="Battery Research" />
+      <div class="research-body">
+        <h3>Polymer Property Prediction</h3>
+        <div class="mentor">Independent Study</div>
+        <div class="date">Jan 2025 – Present</div>
+        <p>Developing machine learning models to accelerate the discovery of high-performance electrolytes for Li-ion batteries.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-wrap">
+  <div class="section-label">Recognition</div>
+  <h2>Awards & Leadership</h2>
+  <div class="awards-strip">
+    <div class="award-pill">High School Valedictorian</div>
+    <div class="award-pill">Crest Gold Award — Exceptional Research</div>
+    <div class="award-pill">AMC 12 — 1st in School · AIME Qualifier</div>
+    <div class="award-pill">Patent — 90% Joint Efficiency Cu-Hilumin Laser Welds</div>
+    <div class="award-pill">Kappa Theta Pi Professional Tech Fraternity</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-wrap" id="contact">
+  <div class="section-label">Contact</div>
+  <h2>Let's connect</h2>
+  <p>Open to research collaborations, internships, and interesting conversations.</p>
+  <div class="contact-links">
+    <a href="mailto:idp7@cornell.edu" class="btn btn-primary">idp7@cornell.edu</a>
+    <a href="#" class="btn btn-ghost">LinkedIn</a>
+    <a href="#" class="btn btn-ghost">GitHub</a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Ishaan Parikh</span>
+  <span>ECE · Cornell University · Ithaca, NY</span>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
